@@ -41,9 +41,31 @@ public class DreamerRepository {
         return dreamers.get(0);
     }
 
-    public boolean update(Dreamer dreamer) {
+    // Query MySQL to update Last Login of dreamer 
+    public boolean updateLastLogin(Dreamer dreamer) {
         System.out.println("Updating dreamer...");
         int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_LOGIN, dreamer.getLastLoginDate(), dreamer.getLastLoginDateDisplay(), dreamer.getEmail());
+        return rowsInserted > 0;
+    }
+
+    // Query MySQL to update Password of dreamer
+    public boolean updatePassword(Dreamer dreamer) {
+        System.out.println("Changing password...");
+        int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_PASSWORD, dreamer.getPassword(), dreamer.getEmail());
+        return rowsInserted > 0;
+    }
+
+    // Query MySQL to update Profile of dreamer
+    public boolean updateProfile(Dreamer dreamer) {
+        System.out.println("Updating profile of dreamer...");
+        int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_PROFILE, dreamer.getFirstName(), dreamer.getLastName(), dreamer.getProfileImageUrl(), dreamer.getEmail());
+        return rowsInserted > 0;
+    }
+
+    // Query MySQL to delete dreamer
+    public boolean delete(Dreamer dreamer) {
+        System.out.println("Deleting dreamer...");
+        int rowsInserted = jdbcTemplate.update(SQL_DELETE_DREAMER, dreamer.getEmail());
         return rowsInserted > 0;
     }
 }
