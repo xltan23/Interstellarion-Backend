@@ -6,22 +6,21 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 import sg.edu.nus.iss.server.exceptions.EmailExistsException;
 import sg.edu.nus.iss.server.exceptions.EmailNotFoundException;
 import sg.edu.nus.iss.server.exceptions.ExceptionHandling;
 import sg.edu.nus.iss.server.models.Dreamer;
 import sg.edu.nus.iss.server.security.DreamerPrincipal;
+import sg.edu.nus.iss.server.security.HttpResponse;
 import sg.edu.nus.iss.server.security.JWTTokenProvider;
 import sg.edu.nus.iss.server.services.DreamerService;
 
@@ -31,6 +30,7 @@ import javax.mail.MessagingException;
 
 @RestController
 @RequestMapping(value = {"/","/dreamer"})
+@CrossOrigin(origins = "*")
 public class DreamerController extends ExceptionHandling {
 
     private DreamerService dreamerSvc;
@@ -45,45 +45,37 @@ public class DreamerController extends ExceptionHandling {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteDreamer(@RequestBody Dreamer dreamer)  throws EmailNotFoundException {        
+    @PostMapping("/delete")
+    public ResponseEntity<HttpResponse> deleteDreamer(@RequestPart String email, @RequestPart String password)  throws EmailNotFoundException {        
         System.out.println("Authenticating credentials...");
-        authenticate(dreamer.getEmail(), dreamer.getPassword());
-        dreamerSvc.delete(dreamer.getEmail());
-        JsonObject deleteSuccess = Json.createObjectBuilder()
-                                        .add("SUCCESS", "Dreamer (%s) deleted".formatted(dreamer.getEmail()))
-                                        .build();
-        return new ResponseEntity<>(deleteSuccess.toString(), HttpStatus.OK);
+        authenticate(email, password);
+        dreamerSvc.delete(email);
+        String deleteMessage = "Dreamer (%s) deleted".formatted(email);
+        return response(HttpStatus.OK, deleteMessage);
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<String> editDreamer(@RequestBody Dreamer dreamer) throws EmailNotFoundException {
+    public ResponseEntity<HttpResponse> editDreamer(@RequestBody Dreamer dreamer) throws EmailNotFoundException {
         dreamerSvc.updateProfile(dreamer.getFirstName(), dreamer.getLastName(), dreamer.getEmail(), dreamer.getProfileImageUrl());
-        JsonObject editSuccess = Json.createObjectBuilder()
-                                    .add("SUCCESS", "Dreamer (%s) edited".formatted(dreamer.getEmail()))
-                                    .build();
-        return new ResponseEntity<>(editSuccess.toString(), HttpStatus.OK);
+        String editMessage = "Dreamer (%s) edited. Please re-login to see the changes".formatted(dreamer.getEmail());
+        return response(HttpStatus.OK, editMessage);
     }
 
     @PutMapping("/changePassword")
-    public ResponseEntity<String> changePassword(@RequestParam("email") String email, @RequestParam("password") String password, 
+    public ResponseEntity<HttpResponse> changePassword(@RequestParam("email") String email, @RequestParam("password") String password, 
                                                 @RequestParam("newPassword") String newPassword) throws EmailNotFoundException {
         System.out.println("Authenticating credentials...");
         authenticate(email, password);
         dreamerSvc.changePassword(email, newPassword);
-        JsonObject changeSuccess = Json.createObjectBuilder()
-                                        .add("SUCCESS", "Dreamer (%s) password changed".formatted(email))
-                                        .build();
-        return new ResponseEntity<>(changeSuccess.toString(), HttpStatus.OK);
+        String changeMessage = "Dreamer (%s) password changed".formatted(email);
+        return response(HttpStatus.OK, changeMessage);
     }
 
     @PostMapping("/forgetPassword")
-    public ResponseEntity<String> resetPassword(@RequestBody Dreamer dreamer) throws EmailNotFoundException, MessagingException {
+    public ResponseEntity<HttpResponse> resetPassword(@RequestBody Dreamer dreamer) throws EmailNotFoundException, MessagingException {
         dreamerSvc.forgetPassword(dreamer.getEmail());
-        JsonObject changeSuccess = Json.createObjectBuilder()
-                                        .add("SUCCESS", "New password sent to %s. Please login and change your password".formatted(dreamer.getEmail()))
-                                        .build();
-        return new ResponseEntity<>(changeSuccess.toString(), HttpStatus.OK);
+        String resetMessage = "New password sent to %s. Please login and change your password".formatted(dreamer.getEmail());
+        return response(HttpStatus.OK, resetMessage);
     }
 
     @PostMapping("/login")
@@ -103,6 +95,10 @@ public class DreamerController extends ExceptionHandling {
     public ResponseEntity<Dreamer> register(@RequestBody Dreamer dreamer) throws EmailNotFoundException, EmailExistsException, MessagingException {
         Dreamer registerDreamer = dreamerSvc.register(dreamer.getFirstName(), dreamer.getLastName(), dreamer.getEmail(), dreamer.getDateOfBirth(), dreamer.getGender());
         return new ResponseEntity<>(registerDreamer, HttpStatus.OK);
+    }
+
+    private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase(), message), httpStatus);
     }
 
     private void authenticate(String email, String password) {
