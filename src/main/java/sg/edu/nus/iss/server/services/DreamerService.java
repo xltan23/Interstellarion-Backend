@@ -1,5 +1,9 @@
 package sg.edu.nus.iss.server.services;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
+import java.util.Base64;
 import java.util.Date;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -12,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import sg.edu.nus.iss.server.exceptions.EmailExistsException;
 import sg.edu.nus.iss.server.exceptions.EmailNotFoundException;
@@ -21,6 +26,8 @@ import sg.edu.nus.iss.server.security.DreamerPrincipal;
 import sg.edu.nus.iss.server.security.Role;
 
 import javax.mail.MessagingException;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 import javax.transaction.Transactional;
 
 @Service
@@ -96,7 +103,7 @@ public class DreamerService implements UserDetailsService {
 
     // METHOD: Update existing Dreamer
     // Cannot update Email, DOB, Gender, Join Date 
-    public Dreamer updateProfile(String newFirstName, String newLastName, String email, String newProfileImageUrl) throws EmailNotFoundException {
+    public Dreamer updateProfile(String newFirstName, String newLastName, String email, MultipartFile newProfileImage) throws EmailNotFoundException, SerialException, SQLException, IOException {
         // If email does not exist in database
         if (!emailExists(email)) {
             throw new EmailNotFoundException("No Dreamer found by email: " + email);
@@ -104,8 +111,8 @@ public class DreamerService implements UserDetailsService {
         Dreamer dreamer = findDreamerByEmail(email);
         dreamer.setFirstName(newFirstName);
         dreamer.setLastName(newLastName);
-        dreamer.setProfileImageUrl(newProfileImageUrl);
-        updateProfile(dreamer);
+        Blob blob = new SerialBlob(newProfileImage.getBytes());
+        updateProfile(dreamer, blob);
         return dreamer;
     }
 
@@ -162,6 +169,22 @@ public class DreamerService implements UserDetailsService {
         }
         String[] authorities = Role.ROLE_USER.getAuthorities();
         return authorities;
+    }
+
+    // METHOD: Get permanent Profile Image from database
+    public String getProfileImage(String dreamerId) throws SQLException {
+        Blob blob = dreamerRepo.getProfileImage(dreamerId);
+        return convertBlobToBase64(blob);
+    }
+
+    // METHOD: Convert Blob to Base64 String
+    private String convertBlobToBase64(Blob blob) throws SQLException {
+        String base64String = "";
+        if (blob != null) {
+            byte[] blobBytes = blob.getBytes(1, (int)blob.length());
+            base64String = Base64.getEncoder().encodeToString(blobBytes);
+        }
+        return base64String;
     }
 
     // METHOD: Get temporary Profile Image Url from robohash.org
@@ -227,8 +250,8 @@ public class DreamerService implements UserDetailsService {
         dreamerRepo.updatePassword(dreamer);
     }
 
-    private void updateProfile(Dreamer dreamer) {
-        dreamerRepo.updateProfile(dreamer);
+    private void updateProfile(Dreamer dreamer, Blob blob) {
+        dreamerRepo.updateProfile(dreamer, blob);
     }
 
     private void delete(Dreamer dreamer) {

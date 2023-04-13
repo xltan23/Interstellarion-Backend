@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.server.models;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.Date;
 
 // import javax.persistence.Column;
@@ -25,6 +26,7 @@ public class Dreamer implements Serializable {
     private String email;
     private String password;
     private String profileImageUrl;
+    // private Blob profileImage;
     private String dateOfBirth;
     private String gender;
     private Date lastLoginDateDisplay;
@@ -49,6 +51,7 @@ public class Dreamer implements Serializable {
         this.email = email;
         this.password = password;
         this.profileImageUrl = profileImageUrl;
+        // this.profileImage = profileImage;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
@@ -189,6 +192,14 @@ public class Dreamer implements Serializable {
         this.isNotLocked = isNotLocked;
     }
 
+    // public Blob getProfileImage() {
+    //     return profileImage;
+    // }
+
+    // public void setProfileImage(Blob profileImage) {
+    //     this.profileImage = profileImage;
+    // }
+
     // Create Dreamer object from SqlRowSet
     public static Dreamer create(SqlRowSet srs) {
         Dreamer dreamer = new Dreamer();
@@ -201,6 +212,9 @@ public class Dreamer implements Serializable {
         dreamer.setEmail(srs.getString("email"));
         dreamer.setPassword(srs.getString("password"));
         dreamer.setProfileImageUrl(srs.getString("profile_image_url"));
+        // if (srs.getObject("profile_image") != null) {
+        //     dreamer.setProfileImage((Blob)srs.getObject("profile_image"));
+        // }
         if (srs.getDate("last_login") != null) {
             dreamer.setLastLoginDate(new Date(srs.getDate("last_login").getTime()));
         }

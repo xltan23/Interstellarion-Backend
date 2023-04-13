@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import sg.edu.nus.iss.server.exceptions.EmailExistsException;
 import sg.edu.nus.iss.server.exceptions.EmailNotFoundException;
@@ -26,7 +29,12 @@ import sg.edu.nus.iss.server.services.DreamerService;
 
 import static sg.edu.nus.iss.server.security.SecurityConstant.*;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.sql.SQLException;
+
 import javax.mail.MessagingException;
+import javax.sql.rowset.serial.SerialException;
 
 @RestController
 @RequestMapping(value = {"/","/dreamer"})
@@ -45,6 +53,13 @@ public class DreamerController extends ExceptionHandling {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @GetMapping("/image/{dreamerId}")
+    public ResponseEntity<String> getProfileImage(@PathVariable String dreamerId) throws SQLException {
+        System.out.println("Received by server:" + dreamerId);
+        String base64String = dreamerSvc.getProfileImage(dreamerId);
+        return new ResponseEntity<>(base64String, HttpStatus.OK);
+    }
+
     @PostMapping("/delete")
     public ResponseEntity<HttpResponse> deleteDreamer(@RequestPart String email, @RequestPart String password)  throws EmailNotFoundException {        
         System.out.println("Authenticating credentials...");
@@ -55,9 +70,10 @@ public class DreamerController extends ExceptionHandling {
     }
 
     @PutMapping("/edit")
-    public ResponseEntity<HttpResponse> editDreamer(@RequestBody Dreamer dreamer) throws EmailNotFoundException {
-        dreamerSvc.updateProfile(dreamer.getFirstName(), dreamer.getLastName(), dreamer.getEmail(), dreamer.getProfileImageUrl());
-        String editMessage = "Dreamer (%s) edited. Please re-login to see the changes".formatted(dreamer.getEmail());
+    public ResponseEntity<HttpResponse> editDreamer(@RequestPart String firstName, @RequestPart String lastName, 
+                                                @RequestPart String email, @RequestPart MultipartFile profileImage) throws EmailNotFoundException, SerialException, SQLException, IOException {
+        dreamerSvc.updateProfile(firstName, lastName, email, profileImage);
+        String editMessage = "Dreamer (%s) edited. Please re-login to see the changes".formatted(email);
         return response(HttpStatus.OK, editMessage);
     }
 

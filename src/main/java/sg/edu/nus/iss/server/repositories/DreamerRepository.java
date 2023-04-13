@@ -9,6 +9,12 @@ import sg.edu.nus.iss.server.models.Dreamer;
 
 import static sg.edu.nus.iss.server.repositories.Queries.*;
 
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,10 +27,11 @@ public class DreamerRepository {
     // Query MySQL to insert dreamer
     public boolean register(Dreamer dreamer) {
         System.out.println("Registering dreamer...");
-        int rowsInserted = jdbcTemplate.update(SQL_INSERT_NEW_DREAMER, dreamer.getDreamerId(), dreamer.getFirstName(),
+        int dreamerInserted = jdbcTemplate.update(SQL_INSERT_NEW_DREAMER, dreamer.getDreamerId(), dreamer.getFirstName(),
             dreamer.getLastName(), dreamer.getDateOfBirth(), dreamer.getGender(), dreamer.getEmail(), dreamer.getPassword(),
             dreamer.getProfileImageUrl(), dreamer.getJoinDate(), dreamer.getRole(), dreamer.getIsActive(), dreamer.getIsNotLocked());
-        return rowsInserted > 0;
+        int imageInserted = jdbcTemplate.update(SQL_INSERT_DREAMER_PROFILE_PIC, dreamer.getDreamerId());
+        return dreamerInserted > 0 && imageInserted > 0;
     }
 
     // Query MySQL to find dreamer
@@ -51,21 +58,37 @@ public class DreamerRepository {
     // Query MySQL to update Password of dreamer
     public boolean updatePassword(Dreamer dreamer) {
         System.out.println("Changing password...");
-        int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_PASSWORD, dreamer.getPassword(), dreamer.getEmail());
-        return rowsInserted > 0;
+        int passwordChanged = jdbcTemplate.update(SQL_UPDATE_DREAMER_PASSWORD, dreamer.getPassword(), dreamer.getEmail());
+        return passwordChanged > 0;
     }
 
     // Query MySQL to update Profile of dreamer
-    public boolean updateProfile(Dreamer dreamer) {
+    public boolean updateProfile(Dreamer dreamer, Blob blob) {
         System.out.println("Updating profile of dreamer...");
-        int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_PROFILE, dreamer.getFirstName(), dreamer.getLastName(), dreamer.getProfileImageUrl(), dreamer.getEmail());
-        return rowsInserted > 0;
+        int dreamerUpdated = jdbcTemplate.update(SQL_UPDATE_DREAMER_PROFILE, dreamer.getFirstName(), dreamer.getLastName(), dreamer.getEmail());
+        int imageUpdated = jdbcTemplate.update(SQL_UPDATE_DREAMER_PROFILE_PIC, blob, dreamer.getDreamerId());
+        return dreamerUpdated > 0 && imageUpdated > 0;
     }
 
     // Query MySQL to delete dreamer
     public boolean delete(Dreamer dreamer) {
         System.out.println("Deleting dreamer...");
-        int rowsInserted = jdbcTemplate.update(SQL_DELETE_DREAMER, dreamer.getEmail());
-        return rowsInserted > 0;
+        int dreamerDeleted = jdbcTemplate.update(SQL_DELETE_DREAMER, "deleted", "deleted", "deleted", "deleted", "deleted",
+            "deleted", "deleted", "deleted", false, false, dreamer.getEmail());
+        return dreamerDeleted > 0;
+    }
+
+    // Query to get Blob from database
+    public Blob getProfileImage(String dreamerId) throws SQLException {
+        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dreamerdb", "dreamuser", "Ddb@123");
+        PreparedStatement ps = con.prepareStatement(SQL_SELECT_PROFILE_IMAGE);
+        ResultSet rs = ps.executeQuery();
+        Blob blob = null;
+        while(rs.next()) {
+            if (rs.getString("dreamer_id").equals(dreamerId)) {
+                blob = rs.getBlob("profile_image");
+            }
+        }
+        return blob;
     }
 }
