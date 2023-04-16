@@ -24,21 +24,25 @@ public class DreamerRepository {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    // Query MySQL to insert dreamer
+    // Query MySQL to insert new Dreamer
     public boolean register(Dreamer dreamer) {
         System.out.println("Registering dreamer...");
+        // Insert new Dreamer in DREAMERS
         int dreamerInserted = jdbcTemplate.update(SQL_INSERT_NEW_DREAMER, dreamer.getDreamerId(), dreamer.getFirstName(),
             dreamer.getLastName(), dreamer.getDateOfBirth(), dreamer.getGender(), dreamer.getEmail(), dreamer.getPassword(),
             dreamer.getProfileImageUrl(), dreamer.getJoinDate(), dreamer.getRole(), dreamer.getIsActive(), dreamer.getIsNotLocked());
+        // Insert new Dreamer in IMAGES
         int imageInserted = jdbcTemplate.update(SQL_INSERT_DREAMER_PROFILE_PIC, dreamer.getDreamerId());
         return dreamerInserted > 0 && imageInserted > 0;
     }
 
-    // Query MySQL to find dreamer
+    // Query MySQL to find Dreamer
     public Dreamer findDreamerByEmail(String email) {
         System.out.println("Finding dreamer by email...");
+        // Select existing Dreamer in DREAMERS
         SqlRowSet srs = jdbcTemplate.queryForRowSet(SQL_FIND_DREAMER_BY_EMAIL, email);
         List<Dreamer> dreamers = new LinkedList<>();
+        // Should return only 1 Dreamer
         while (srs.next()) {
             dreamers.add(Dreamer.create(srs));
         }
@@ -51,13 +55,15 @@ public class DreamerRepository {
     // Query MySQL to update Last Login of dreamer 
     public boolean updateLastLogin(Dreamer dreamer) {
         System.out.println("Updating dreamer...");
-        int rowsInserted = jdbcTemplate.update(SQL_UPDATE_DREAMER_LOGIN, dreamer.getLastLoginDate(), dreamer.getLastLoginDateDisplay(), dreamer.getEmail());
-        return rowsInserted > 0;
+        // Update existing Dreamer in DREAMERS
+        int dreamerUpdated = jdbcTemplate.update(SQL_UPDATE_DREAMER_LOGIN, dreamer.getLastLoginDate(), dreamer.getLastLoginDateDisplay(), dreamer.getEmail());
+        return dreamerUpdated > 0;
     }
 
     // Query MySQL to update Password of dreamer
     public boolean updatePassword(Dreamer dreamer) {
         System.out.println("Changing password...");
+        // Update existing Dreamer in DREAMERS
         int passwordChanged = jdbcTemplate.update(SQL_UPDATE_DREAMER_PASSWORD, dreamer.getPassword(), dreamer.getEmail());
         return passwordChanged > 0;
     }

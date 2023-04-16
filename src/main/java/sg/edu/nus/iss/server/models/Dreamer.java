@@ -1,24 +1,13 @@
 package sg.edu.nus.iss.server.models;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.Date;
-
-// import javax.persistence.Column;
-// import javax.persistence.Entity;
-// import javax.persistence.GeneratedValue;
-// import javax.persistence.GenerationType;
-// import javax.persistence.Id;
 
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-// @Entity
 public class Dreamer implements Serializable {
     
-    // Mark the primary key (Auto-generated and the Primary key column is not null and not updatable)
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.AUTO)
-    // @Column(nullable = false, updatable = false)
+    // Dreamer Attributes
     private int id;
     private String dreamerId;
     private String firstName;
@@ -26,7 +15,6 @@ public class Dreamer implements Serializable {
     private String email;
     private String password;
     private String profileImageUrl;
-    // private Blob profileImage;
     private String dateOfBirth;
     private String gender;
     private Date lastLoginDateDisplay;
@@ -51,7 +39,6 @@ public class Dreamer implements Serializable {
         this.email = email;
         this.password = password;
         this.profileImageUrl = profileImageUrl;
-        // this.profileImage = profileImage;
         this.dateOfBirth = dateOfBirth;
         this.gender = gender;
         this.lastLoginDateDisplay = lastLoginDateDisplay;
@@ -192,15 +179,7 @@ public class Dreamer implements Serializable {
         this.isNotLocked = isNotLocked;
     }
 
-    // public Blob getProfileImage() {
-    //     return profileImage;
-    // }
-
-    // public void setProfileImage(Blob profileImage) {
-    //     this.profileImage = profileImage;
-    // }
-
-    // Create Dreamer object from SqlRowSet
+    // Create Dreamer object from SqlRowSet (Used when retrieving Dreamer for logging in)
     public static Dreamer create(SqlRowSet srs) {
         Dreamer dreamer = new Dreamer();
         dreamer.setId(srs.getInt("id"));
@@ -212,9 +191,6 @@ public class Dreamer implements Serializable {
         dreamer.setEmail(srs.getString("email"));
         dreamer.setPassword(srs.getString("password"));
         dreamer.setProfileImageUrl(srs.getString("profile_image_url"));
-        // if (srs.getObject("profile_image") != null) {
-        //     dreamer.setProfileImage((Blob)srs.getObject("profile_image"));
-        // }
         if (srs.getDate("last_login") != null) {
             dreamer.setLastLoginDate(new Date(srs.getDate("last_login").getTime()));
         }

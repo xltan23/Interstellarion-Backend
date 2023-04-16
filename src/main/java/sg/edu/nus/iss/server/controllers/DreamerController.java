@@ -30,7 +30,6 @@ import sg.edu.nus.iss.server.services.DreamerService;
 import static sg.edu.nus.iss.server.security.SecurityConstant.*;
 
 import java.io.IOException;
-import java.sql.Blob;
 import java.sql.SQLException;
 
 import javax.mail.MessagingException;

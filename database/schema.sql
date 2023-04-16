@@ -28,3 +28,27 @@ CREATE TABLE images (
     primary key(id),
     constraint fk_images_dreamer_id foreign key(dreamer_id) references dreamers(dreamer_id)
 );
+
+-- PLANETS Table
+CREATE TABLE planets (
+	id int auto_increment not null,
+    name VARCHAR(32) not null,
+    mass double not null,
+    radius double not null,
+    period double not null,
+    semi_major_axis double not null,
+    temperature int not null,
+    distance_light_years double not null,
+    host_star_mass double not null,
+    host_star_temperature double not null,
+    gravity double not null,
+    solar_insolation double not null,
+    star_type VARCHAR(32) not null,
+    travel_time double not null,
+    cost double not null,
+    description longtext not null,
+    thumbnailUrl VARCHAR(256) not null,
+    coverUrl VARCHAR(256) not null,
+	UNIQUE(name),
+    primary key(id)
+);
