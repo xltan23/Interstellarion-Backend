@@ -18,7 +18,6 @@ public class Planet {
     private Double host_star_mass; // In Kilogram
     private Double host_star_temperature; // In Kelvin
     private Double gravity; // In m/s^2
-    private Double solar_insolation; // In W/m^2 (Estimation of planet's temperature)
     private String star_type; // Take into account luminosity (from mass) and temperature
     private Double travel_time; // In Earth Years
     private Double cost; // In USD
@@ -107,14 +106,6 @@ public class Planet {
         this.gravity = gravity;
     }
 
-    public Double getSolar_insolation() {
-        return solar_insolation;
-    }
-
-    public void setSolar_insolation(Double solar_insolation) {
-        this.solar_insolation = solar_insolation;
-    }
-
     public String getStar_type() {
         return star_type;
     }
@@ -191,7 +182,6 @@ public class Planet {
         planet.setHost_star_mass(srs.getDouble("host_star_mass"));
         planet.setHost_star_temperature(srs.getDouble("host_star_temperature"));
         planet.setGravity(srs.getDouble("gravity"));
-        planet.setSolar_insolation(srs.getDouble("solar_insolation"));
         planet.setStar_type(srs.getString("star_type"));
         planet.setTravel_time(srs.getDouble("travel_time"));
         planet.setCost(srs.getDouble("cost"));

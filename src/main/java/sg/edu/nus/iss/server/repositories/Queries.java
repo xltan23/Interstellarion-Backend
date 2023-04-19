@@ -17,7 +17,7 @@ public class Queries {
 
     // PLANETS REPOSITORY
     public static final String SQL_SELECT_PLANET = "SELECT * FROM planets WHERE name = ?";
-    public static final String SQL_INSERT_NEW_PLANET = "INSERT INTO planets (name, mass, radius, period, semi_major_axis, temperature, distance_light_year, host_star_mass, host_star_temperature, gravity, solar_insolation, star_type, travel_time, cost, description, thumbnailUrl, coverUrl) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public static final String SQL_INSERT_NEW_PLANET = "INSERT INTO planets (name, mass, radius, period, semi_major_axis, temperature, distance_light_year, host_star_mass, host_star_temperature, gravity, star_type, travel_time, cost, description, thumbnailUrl, coverUrl) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     public static final String SQL_SELECT_DEFAULT_PLANETS = "SELECT * FROM planets WHERE name in (\"Mercury\",\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\",\"Uranus\",\"Neptune\",\"Pluto\")";
     // CALLED BY ADMIN
     public static final String SQL_UPDATE_EXISTING_PLANET = "UPDATE planets SET description = ?, thumbnailUrl = ?, coverUrl = ? WHERE name = ?";

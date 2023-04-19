@@ -38,8 +38,8 @@ public class PlanetRepository {
 
     public boolean insertPlanet(Planet planet) {
         int planetsInserted = jdbcTemplate.update(SQL_INSERT_NEW_PLANET, planet.getName(), planet.getMass(), planet.getRadius(), planet.getPeriod(), 
-            planet.getSemi_major_axis(), planet.getTemperature(), planet.getDistance_light_year(), planet.getHost_star_mass(), planet.getHost_star_temperature(), 
-            planet.getGravity(), planet.getSolar_insolation(), planet.getStar_type(), planet.getTravel_time(), planet.getCost(), 
+            planet.getSemi_major_axis(), planet.getTemperature(), planet.getDistance_light_year(), planet.getHost_star_mass(), 
+            planet.getHost_star_temperature(), planet.getGravity(), planet.getStar_type(), planet.getTravel_time(), planet.getCost(), 
             planet.getDescription(), planet.getThumbnailUrl(), planet.getCoverUrl());
         return planetsInserted > 0;
     }

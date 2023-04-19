@@ -9,15 +9,16 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.json.Json;
-import jakarta.json.JsonArray;
-import jakarta.json.JsonArrayBuilder;
 import sg.edu.nus.iss.server.models.PlanetSearch;
+import sg.edu.nus.iss.server.security.HttpResponse;
+import sg.edu.nus.iss.server.models.Apod;
 import sg.edu.nus.iss.server.models.Planet;
 import sg.edu.nus.iss.server.services.PlanetService;
 
@@ -28,6 +29,12 @@ public class PlanetController {
     
     @Autowired
     private PlanetService planetSvc;
+
+    @GetMapping("/apod")
+    public ResponseEntity<Apod> getApod() {
+        Apod apod = planetSvc.getApod();
+        return new ResponseEntity<>(apod, HttpStatus.OK);
+    }
 
     @PostMapping("/filter")
     public ResponseEntity<List<Planet>> getPlanetsByFilter(@RequestBody PlanetSearch planetSearch) {
@@ -47,25 +54,17 @@ public class PlanetController {
         return new ResponseEntity<>(planetList, HttpStatus.OK);
     }
 
-    // @GetMapping("{planet}")
-    // public ResponseEntity<String> getPlanetsByName(@PathVariable String planet) {
-    //     List<Planet> planetList = planetSvc.getPlanetsFromName(planet);
-    //     JsonArrayBuilder jab = Json.createArrayBuilder();
-    //     for (int i = 0; i < planetList.size(); i++) {
-    //         jab.add(planetList.get(i).toJSON());
-    //     }
-        
-    //     return new ResponseEntity<>(jab.build().toString(), HttpStatus.OK);
-    // }
+    @PutMapping("/update")
+    public ResponseEntity<HttpResponse> updatePlanet(@RequestPart String name, @RequestPart MultipartFile thumbnail, @RequestPart MultipartFile cover, @RequestPart String description) {
+        String message = "Update Unsuccessful.";
+        Boolean updateSuccess = planetSvc.updatePlanet(name, thumbnail, cover, description);
+        if (updateSuccess) {
+            message = "Update Successful!";
+        }
+        return response(HttpStatus.OK, message);
+    }
 
-    // @GetMapping("/all")
-    // public ResponseEntity<String> getPlanetsByName() {
-    //     List<Planet> planetList = planetSvc.getAllPlanets();
-    //     JsonArrayBuilder jab = Json.createArrayBuilder();
-    //     for (int i = 0; i < planetList.size(); i++) {
-    //         jab.add(planetList.get(i).toJSON());
-    //     }
-        
-    //     return new ResponseEntity<>(jab.build().toString(), HttpStatus.OK);
-    // }
+    private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
+        return new ResponseEntity<>(new HttpResponse(httpStatus.value(), httpStatus, httpStatus.getReasonPhrase(), message), httpStatus);
+    }
 }
