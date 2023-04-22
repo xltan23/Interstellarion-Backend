@@ -1,7 +1,5 @@
 package sg.edu.nus.iss.server.models;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import jakarta.json.Json;
@@ -15,6 +13,7 @@ public class Booking {
     private String planetThumbnail;
     private Integer numberOfPax;
     private Date travelDate;
+    private String stringDate;
     private Double totalCost;
     private Date dateOfBooking;
 
@@ -48,6 +47,12 @@ public class Booking {
     public void setTravelDate(Date travelDate) {
         this.travelDate = travelDate;
     }
+    public String getStringDate() {
+        return stringDate;
+    }
+    public void setStringDate(String stringDate) {
+        this.stringDate = stringDate;
+    }
     public Double getTotalCost() {
         return totalCost;
     }
@@ -61,13 +66,12 @@ public class Booking {
         this.dateOfBooking = dateOfBooking;
     }
 
-    public static Booking create(JsonObject jsonBooking) throws ParseException {
+    public static Booking create(JsonObject jsonBooking) {
         Booking booking = new Booking();
         booking.setPlanet(jsonBooking.getString("planet"));
         booking.setPlanetThumbnail(jsonBooking.getString("planetThumbnail"));
         booking.setNumberOfPax(jsonBooking.getInt("numberOfPax"));
-        booking.setTravelDate(new SimpleDateFormat("d-MMM-yyyy,HH:mm:ss")
-                                        .parse(jsonBooking.getString("travelDate")));
+        booking.setStringDate(jsonBooking.getString("travelDate"));
         booking.setTotalCost(Double.parseDouble(jsonBooking.getJsonNumber("totalCost").toString()));
         return booking;
     }

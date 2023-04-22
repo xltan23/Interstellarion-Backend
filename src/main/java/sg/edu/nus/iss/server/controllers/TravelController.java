@@ -28,7 +28,7 @@ public class TravelController {
     @PostMapping("/save")
     public ResponseEntity<HttpResponse> saveTemporaryBooking(@RequestBody Booking booking) {
         travelSvc.saveTemporaryBooking(booking);
-        String message = "Booking saved.";
+        String message = "Booking saved";
         return response(HttpStatus.OK, message);
     }
 

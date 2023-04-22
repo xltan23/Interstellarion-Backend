@@ -1,7 +1,6 @@
 package sg.edu.nus.iss.server.services;
 
 import java.io.StringReader;
-import java.text.ParseException;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +19,13 @@ public class TravelService {
     private TravelRepository travelRepo;
 
     public void saveTemporaryBooking(Booking booking) {
+        Double actualTotal = booking.getNumberOfPax() * booking.getTotalCost();
+        booking.setTotalCost(actualTotal);
         String payload = booking.toJSON().toString();
         travelRepo.save(booking.getDreamerId(), payload);
     }
 
-    public Booking getTemporaryBooking(String dreamerId) throws ParseException {
+    public Booking getTemporaryBooking(String dreamerId) {
         Optional<String> optBook = travelRepo.get(dreamerId);
         Booking booking = new Booking();
         if (optBook.isEmpty()) {
