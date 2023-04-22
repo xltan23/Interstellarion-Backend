@@ -1,4 +1,4 @@
--- Dreamers Table
+-- DREAMERS Table
 CREATE TABLE dreamers (
 	id int auto_increment not null,
     dreamer_id VARCHAR(32) not null,
@@ -51,4 +51,12 @@ CREATE TABLE planets (
     coverUrl VARCHAR(256) not null,
 	UNIQUE(name),
     primary key(id)
+);
+
+-- BACKGROUND Table
+CREATE TABLE background (
+	id int auto_increment not null,
+	title VARCHAR(64) not null,
+	background VARCHAR(256) not null,
+	primary key(id)
 );

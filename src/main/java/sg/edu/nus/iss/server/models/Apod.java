@@ -38,7 +38,7 @@ public class Apod {
         Apod apod = new Apod();
         apod.setDate(jsonApod.getString("date"));
         apod.setExplanation(jsonApod.getString("explanation"));
-        apod.setHdurl(jsonApod.getString("hdurl"));
+        apod.setHdurl(jsonApod.getString("url"));
         apod.setTitle(jsonApod.getString("title"));
         return apod;
     }

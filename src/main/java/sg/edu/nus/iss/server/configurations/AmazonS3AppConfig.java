@@ -11,7 +11,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 
 @Configuration
-public class AppConfig {
+public class AmazonS3AppConfig {
 
     // AMAZON S3 CLOUD
     @Value("${spaces.secret.key}")

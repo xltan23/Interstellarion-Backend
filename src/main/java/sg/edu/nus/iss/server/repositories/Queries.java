@@ -21,4 +21,5 @@ public class Queries {
     public static final String SQL_SELECT_DEFAULT_PLANETS = "SELECT * FROM planets WHERE name in (\"Mercury\",\"Venus\",\"Earth\",\"Mars\",\"Jupiter\",\"Saturn\",\"Uranus\",\"Neptune\",\"Pluto\")";
     // CALLED BY ADMIN
     public static final String SQL_UPDATE_EXISTING_PLANET = "UPDATE planets SET description = ?, thumbnailUrl = ?, coverUrl = ? WHERE name = ?";
+    public static final String SQL_INSERT_BACKGROUND = "INSERT INTO background (title, background) VALUES (?,?)";
 }

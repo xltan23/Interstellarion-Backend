@@ -22,13 +22,16 @@ public class EmailService {
         System.out.println("Sending email to: " + email);
         Message message = createEmail(firstName, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
+        System.out.println("Connecting to SMTP server");
         smtpTransport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
+        System.out.println("Sending message...");
         smtpTransport.sendMessage(message, message.getAllRecipients());
         smtpTransport.close();
     }
 
     // Create email content
     private Message createEmail(String firstName, String password, String email) throws MessagingException {
+        System.out.println("Creating email...");
         Message message = new MimeMessage(getEmailSession());
         message.setFrom(new InternetAddress(FROM_EMAIL));
         // Send email TO someone
@@ -43,6 +46,7 @@ public class EmailService {
     
     // Create email session
     private Session getEmailSession() {
+        System.out.println("Creating email session...");
         // Setting up properties
         Properties properties = System.getProperties();
         properties.put(SMTP_HOST, GMAIL_SMTP_SERVER);

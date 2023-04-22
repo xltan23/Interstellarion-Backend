@@ -48,4 +48,9 @@ public class PlanetRepository {
         int planetUpdated = jdbcTemplate.update(SQL_UPDATE_EXISTING_PLANET, planet.getDescription(), planet.getThumbnailUrl(), planet.getCoverUrl(), planet.getName());
         return planetUpdated > 0;
     }
+
+    public boolean insertBackground(String title, String backgroundUrl) {
+        int backgroundInserted = jdbcTemplate.update(SQL_INSERT_BACKGROUND, title, backgroundUrl);
+        return backgroundInserted > 0;
+    }
 }

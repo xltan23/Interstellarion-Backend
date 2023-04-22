@@ -57,10 +57,20 @@ public class PlanetController {
     @PutMapping("/update")
     public ResponseEntity<HttpResponse> updatePlanet(@RequestPart String name, @RequestPart MultipartFile thumbnail, @RequestPart MultipartFile cover, @RequestPart String description) {
         String message = "Update Unsuccessful.";
-        Boolean updateSuccess = planetSvc.updatePlanet(name, thumbnail, cover, description);
+        boolean updateSuccess = planetSvc.updatePlanet(name, thumbnail, cover, description);
         if (updateSuccess) {
             message = "Update Successful!";
         }
+        return response(HttpStatus.OK, message);
+    }
+
+    @PostMapping("/background")
+    public ResponseEntity<HttpResponse> postBackground(@RequestPart String title, @RequestPart MultipartFile background) {
+        String message = "Insert Unsuccessful.";
+        boolean insertSuccess = planetSvc.insertBackground(title, background);
+        if (insertSuccess) {
+            message = "Insert Successful!";
+        } 
         return response(HttpStatus.OK, message);
     }
 

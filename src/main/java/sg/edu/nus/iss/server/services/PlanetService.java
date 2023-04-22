@@ -149,7 +149,7 @@ public class PlanetService {
         return planetList;
     }
 
-    // Get list of planets
+    // Update profile of planet
     public boolean updatePlanet(String name, MultipartFile thumbnail, MultipartFile cover, String description) {
         Planet planet = new Planet();
         planet.setName(name);
@@ -160,6 +160,12 @@ public class PlanetService {
         planet.setCoverUrl(imageRepo.uploadImage(coverKey, cover));
         return planetRepo.updatePlanet(planet);
     }
+
+    // Update background of pages
+    public boolean insertBackground(String title, MultipartFile background) {
+        String backgroundUrl = imageRepo.uploadImage(title, background);
+        return planetRepo.insertBackground(title, backgroundUrl);
+    }   
 
     // Get APOD from NASA API
     public Apod getApod() {
@@ -266,7 +272,7 @@ public class PlanetService {
             cost += travel_time*35;
         }
         // Outside Solar System (Far ~50-100 ly)
-        if (travel_time > 5000 && travel_time < 10000) {
+        if (travel_time > 5000) {
             cost += travel_time*50;
         }
 
