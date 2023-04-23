@@ -23,4 +23,8 @@ public class Queries {
     // CALLED BY ADMIN
     public static final String SQL_UPDATE_EXISTING_PLANET = "UPDATE planets SET description = ?, thumbnailUrl = ?, coverUrl = ? WHERE name = ?";
     public static final String SQL_INSERT_BACKGROUND = "INSERT INTO background (title, background) VALUES (?,?)";
+
+    // BOOKINGS REPOSITORY
+    public static final String SQL_SELECT_BOOKINGS = "SELECT * FROM bookings WHERE dreamer_id = ?";
+    public static final String SQL_INSERT_NEW_BOOKING = "INSERT INTO bookings (dreamer_id, planet, number_of_pax, travel_date, total_cost, date_of_booking) VALUES (?,?,?,?,?, SYSDATE())";
 }

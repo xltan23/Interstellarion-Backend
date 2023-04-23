@@ -1,5 +1,7 @@
 package sg.edu.nus.iss.server.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,13 @@ public class TravelController {
     public ResponseEntity<Booking> getTemporaryBooking(@PathVariable String dreamerId) {
         Booking booking = travelSvc.getTemporaryBooking(dreamerId);
         return new ResponseEntity<>(booking, HttpStatus.OK);
+    }
+
+    @GetMapping("history/{dreamerId}")
+    public ResponseEntity<List<Booking>> getBookingHistory(@PathVariable String dreamerId) {
+        System.out.println(dreamerId);
+        List<Booking> bookingList = travelSvc.getBookings(dreamerId);
+        return new ResponseEntity<>(bookingList, HttpStatus.OK);
     }
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {

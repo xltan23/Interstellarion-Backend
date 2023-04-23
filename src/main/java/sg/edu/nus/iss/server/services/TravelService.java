@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.server.services;
 
 import java.io.StringReader;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,5 +39,17 @@ public class TravelService {
         booking = Booking.create(jo);
         booking.setDreamerId(dreamerId);
         return booking;
+    }
+
+    public void deleteTemporaryBooking(String dreamerId) {
+        travelRepo.delete(dreamerId);
+    }
+
+    public List<Booking> getBookings(String dreamerId) {
+        return travelRepo.getBookings(dreamerId);
+    }
+
+    public boolean insertBooking(Booking booking) {
+        return travelRepo.insertBooking(booking);
     }
 }

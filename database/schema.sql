@@ -60,3 +60,16 @@ CREATE TABLE background (
 	background VARCHAR(256) not null,
 	primary key(id)
 );
+
+-- BOOKINGS Table
+CREATE TABLE bookings (
+    id int auto_increment not null,
+    dreamer_id VARCHAR(32) not null,
+    planet VARCHAR(32) not null,
+    number_of_pax int not null,
+    travel_date VARCHAR(128) not null,
+    total_cost double not null,
+    date_of_booking Date not null,
+    primary key(id),
+    constraint fk_bookings_dreamer_id foreign key(dreamer_id) references dreamers(dreamer_id)
+);

@@ -15,6 +15,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import sg.edu.nus.iss.server.models.Booking;
 import sg.edu.nus.iss.server.models.PaymentResponse;
 import sg.edu.nus.iss.server.services.PaymentService;
+import sg.edu.nus.iss.server.services.TravelService;
 
 @RestController
 @RequestMapping(value = "/checkout")
@@ -24,15 +25,20 @@ public class PaypalController {
     @Autowired
     private PaymentService paymentSvc;
 
+    @Autowired
+    private TravelService travelSvc;
+
     @PostMapping("/pay")
     public PaymentResponse checkoutBooking(@RequestBody Booking booking) throws PayPalRESTException {
+        travelSvc.deleteTemporaryBooking(booking.getDreamerId());
+        travelSvc.insertBooking(booking);
         return paymentSvc.createPayment(booking);
     }
 
     @GetMapping("/complete")
     public ModelAndView completePayment(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
-        PaymentResponse paymentResponse = paymentSvc.completePayment(paymentId, payerId);
-        String url = "http://localhost:4200/dreamer";
+        paymentSvc.completePayment(paymentId, payerId);
+        String url = "http://localhost:4200/checkout/success";
         return new ModelAndView("redirect:" + url);
     }
 }

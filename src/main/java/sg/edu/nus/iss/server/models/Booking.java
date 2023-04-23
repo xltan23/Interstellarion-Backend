@@ -2,6 +2,8 @@ package sg.edu.nus.iss.server.models;
 
 import java.util.Date;
 
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
@@ -73,6 +75,15 @@ public class Booking {
         booking.setNumberOfPax(jsonBooking.getInt("numberOfPax"));
         booking.setStringDate(jsonBooking.getString("travelDate"));
         booking.setTotalCost(Double.parseDouble(jsonBooking.getJsonNumber("totalCost").toString()));
+        return booking;
+    }
+
+    public static Booking create(SqlRowSet srs) {
+        Booking booking = new Booking();
+        booking.setDreamerId(srs.getString("dreamer_id"));
+        booking.setPlanet(srs.getString("planet"));
+        booking.setNumberOfPax(srs.getInt("number_of_pax"));
+        booking.setStringDate(srs.getString("travel_date"));
         return booking;
     }
 
