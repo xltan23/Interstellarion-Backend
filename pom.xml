@@ -139,6 +139,14 @@
 			<artifactId>javax.mail</artifactId>
 			<version>1.6.2</version>
 		</dependency>
+
+		<!-- PayPal Payment Gateway Dependency -->
+		<dependency>
+    		<groupId>com.paypal.sdk</groupId>
+    		<artifactId>rest-api-sdk</artifactId>
+    		<version>1.14.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

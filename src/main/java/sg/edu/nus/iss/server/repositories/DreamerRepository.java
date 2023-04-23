@@ -52,6 +52,21 @@ public class DreamerRepository {
         return dreamers.get(0);
     }
 
+    // Query MySQL to find Dreamer
+    public Dreamer findDreamerById(String dreamerId) {
+        System.out.println("Finding dreamer by Dreamer ID...");
+        SqlRowSet srs = jdbcTemplate.queryForRowSet(SQL_FIND_DREAMER_BY_ID, dreamerId);
+        List<Dreamer> dreamers = new LinkedList<>();
+        // Should return only 1 Dreamer
+        while (srs.next()) {
+            dreamers.add(Dreamer.create(srs));
+        }
+        if (dreamers.size() == 0) {
+            return null;
+        }
+        return dreamers.get(0);
+    }
+
     // Query MySQL to update Last Login of dreamer 
     public boolean updateLastLogin(Dreamer dreamer) {
         System.out.println("Updating dreamer...");

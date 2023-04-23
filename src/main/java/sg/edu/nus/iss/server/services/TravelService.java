@@ -35,6 +35,8 @@ public class TravelService {
         StringReader sr = new StringReader(jsonString);
         JsonReader jr = Json.createReader(sr);
         JsonObject jo = jr.readObject();
-        return Booking.create(jo);
+        booking = Booking.create(jo);
+        booking.setDreamerId(dreamerId);
+        return booking;
     }
 }
