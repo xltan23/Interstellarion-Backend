@@ -30,7 +30,7 @@ public class PaypalController {
 
     @PostMapping("/pay")
     public PaymentResponse checkoutBooking(@RequestBody Booking booking) throws PayPalRESTException {
-        travelSvc.deleteTemporaryBooking(booking.getDreamerId());
+        // travelSvc.deleteTemporaryBooking(booking.getDreamerId());
         travelSvc.insertBooking(booking);
         return paymentSvc.createPayment(booking);
     }
