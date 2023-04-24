@@ -31,6 +31,9 @@ public class PaymentService {
     @Autowired
     private APIContext apiContext;
 
+    public static final String SERVER_HOST = "https://interstellarion-production.up.railway.app";
+    public static final String CLIENT_HOST = "https://interstellarion.vercel.app/";
+
     // Creating payment based on booking details
     public PaymentResponse createPayment(Booking booking) {
         PaymentResponse response = new PaymentResponse();
@@ -122,7 +125,7 @@ public class PaymentService {
     private RedirectUrls getRedirectUrls() {
         RedirectUrls redirectUrls = new RedirectUrls();
         // If cancel payment:
-        redirectUrls.setCancelUrl("http://localhost:4200/cart");
+        redirectUrls.setCancelUrl("https://interstellarion.vercel.app/cart");
         // If continue payment:
         redirectUrls.setReturnUrl("http://localhost:8080/checkout/complete");
         return redirectUrls;

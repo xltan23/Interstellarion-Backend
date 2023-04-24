@@ -38,7 +38,7 @@ public class PaypalController {
     @GetMapping("/complete")
     public ModelAndView completePayment(@RequestParam("paymentId") String paymentId, @RequestParam("PayerID") String payerId) {
         paymentSvc.completePayment(paymentId, payerId);
-        String url = "http://localhost:4200/checkout/success";
+        String url = "https://interstellarion.vercel.app/checkout/success";
         return new ModelAndView("redirect:" + url);
     }
 }
