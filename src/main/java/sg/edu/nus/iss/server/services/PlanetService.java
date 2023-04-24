@@ -85,9 +85,9 @@ public class PlanetService {
             planet.setStar_type(determineStarType(planet.getHost_star_mass(), planet.getHost_star_temperature()));
             planet.setTravel_time(rounding(calculateTravelTime(planet.getDistance_light_year())));
             planet.setCost(rounding(calculateTotalCost(planet.getGravity(), planet.getSemi_major_axis(), planet.getStar_type(), planet.getTravel_time())));
-            planet.setDescription("");
-            planet.setThumbnailUrl("");
-            planet.setCoverUrl("");
+            planet.setDescription("This planet has yet to be profiled. You may write in to Interstellarion to request for more information.");
+            planet.setThumbnailUrl("https://xlbucket.sgp1.digitaloceanspaces.com/Exoplanet");
+            planet.setCoverUrl("https://xlbucket.sgp1.digitaloceanspaces.com/ExoplanetCover");
             if (planetRepo.getPlanetsByName(planet.getName()).isEmpty()) {
                planetRepo.insertPlanet(planet); 
             }

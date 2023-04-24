@@ -1,6 +1,7 @@
 package sg.edu.nus.iss.server.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -20,6 +21,13 @@ import java.util.List;
 
 @Repository
 public class DreamerRepository {
+
+    @Value("${spring.datasource.url}")
+    private String url;
+    @Value("${spring.datasource.username}")
+    private String username;
+    @Value("${spring.datasource.password}")
+    private String password;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -101,7 +109,7 @@ public class DreamerRepository {
 
     // Query to get Blob from database
     public Blob getProfileImage(String dreamerId) throws SQLException {
-        Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/dreamerdb", "dreamuser", "Ddb@123");
+        Connection con = DriverManager.getConnection(url, username, password);
         PreparedStatement ps = con.prepareStatement(SQL_SELECT_PROFILE_IMAGE);
         ResultSet rs = ps.executeQuery();
         Blob blob = null;

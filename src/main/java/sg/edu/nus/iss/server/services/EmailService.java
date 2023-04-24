@@ -12,10 +12,15 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.sun.mail.smtp.SMTPTransport;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
+
+    @Value("${EMAIL_PASSWORD}")
+    private String email_password;
 
     // Send email with new password
     public void sendNewPasswordEmail(String firstName, String password, String email) throws MessagingException {
@@ -23,7 +28,7 @@ public class EmailService {
         Message message = createEmail(firstName, password, email);
         SMTPTransport smtpTransport = (SMTPTransport) getEmailSession().getTransport(SIMPLE_MAIL_TRANSFER_PROTOCOL);
         System.out.println("Connecting to SMTP server");
-        smtpTransport.connect(GMAIL_SMTP_SERVER, USERNAME, PASSWORD);
+        smtpTransport.connect(GMAIL_SMTP_SERVER, USERNAME, email_password);
         System.out.println("Sending message...");
         smtpTransport.sendMessage(message, message.getAllRecipients());
         smtpTransport.close();
